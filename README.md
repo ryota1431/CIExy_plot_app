@@ -1,3 +1,4 @@
+[English](README_en.md)
 # CIExy色度図プロットアプリ
 
 CIExy色度図上に任意の点とラベルをプロットできるWebアプリです。SVG形式でダウンロードも可能です。
@@ -58,5 +59,3 @@ GitHub Pagesで公開中: [CIExy_plot_app](https://ryota1431.github.io/CIExy_plo
 > "The CIExy chromaticity diagram was generated using CIExy_plot_app (https://ryota1431.github.io/CIExy_plot_app/). The base image is in the public domain ([CIE1931xy_blank.svg](https://commons.wikimedia.org/wiki/File:CIE1931xy_blank.svg))."
 
 ---
-
-[English](README_en.md)

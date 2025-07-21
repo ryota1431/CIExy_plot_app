@@ -1,3 +1,4 @@
+[日本語](README.md)
 # CIExy Chromaticity Diagram Plotter App
 
 This is a web application that allows you to plot arbitrary points and labels on the CIExy chromaticity diagram. You can also download the diagram in SVG format.
@@ -54,5 +55,3 @@ If you use an image created with this application in a paper or other publicatio
 > "The CIExy chromaticity diagram was generated using CIExy_plot_app (https://ryota1431.github.io/CIExy_plot_app/). The base image is in the public domain ([CIE1931xy_blank.svg](https://commons.wikimedia.org/wiki/File:CIE1931xy_blank.svg))."
 
 ---
-
-[日本語](README.md)
