@@ -56,6 +56,6 @@ GitHub Pagesで公開中: [CIExy_plot_app](https://ryota1431.github.io/CIExy_plo
 
 ### 英語の場合
 
-> "The CIExy chromaticity diagram was generated using CIExy_plot_app (https://ryota1431.github.io/CIExy_plot_app/). The base image is in the public domain ([CIE1931xy_blank.svg](https://commons.wikimedia.org/wiki/File:CIE1931xy_blank.svg))."
+> "The CIExy chromaticity diagram was generated using [CIExy_plot_app](https://ryota1431.github.io/CIExy_plot_app/). The base image is in the public domain ([CIE1931xy_blank.svg](https://commons.wikimedia.org/wiki/File:CIE1931xy_blank.svg))."
 
 ---
