@@ -39,8 +39,22 @@ GitHub Pagesで公開中: [CIExy_plot_app](https://ryota1431.github.io/CIExy_plo
 
 このアプリケーションは MIT ライセンスで公開しています。
 
-色度図の画像は [Wikipedia](https://commons.wikimedia.org/wiki/File:CIE1931xy_blank.svg) を元に作成しています。元画像はパブリックドメインです。
+色度図の画像は [CIE1931xy_blank.svg](https://commons.wikimedia.org/wiki/File:CIE1931xy_blank.svg) を元に作成しています。元画像はパブリックドメインです。
+
+本アプリケーションで作成された画像も、著作権の制約なく自由に利用・改変・再配布できます。
 
 ---
 
-## 作者
+## 論文等での画像利用・引用例
+
+このアプリケーションで作成した画像を論文等で利用する場合は、以下のように記載してください。
+
+### 日本語の場合
+
+> 「CIExy色度図は CIExy_plot_app（https://ryota1431.github.io/CIExy_plot_app/）を用いて作成した。元画像はパブリックドメイン（[CIE1931xy_blank.svg](https://commons.wikimedia.org/wiki/File:CIE1931xy_blank.svg)）を利用。」
+
+### 英語の場合
+
+> "The CIExy chromaticity diagram was generated using CIExy_plot_app (https://ryota1431.github.io/CIExy_plot_app/). The base image is in the public domain ([CIE1931xy_blank.svg](https://commons.wikimedia.org/wiki/File:CIE1931xy_blank.svg))."
+
+---
