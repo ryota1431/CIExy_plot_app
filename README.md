@@ -37,7 +37,9 @@ GitHub Pagesで公開中: [CIExy_plot_app](https://ryota1431.github.io/CIExy_plo
 
 ## ライセンス
 
-色度図の画像は [Wikipedia](https://commons.wikimedia.org/wiki/File:CIE1931xy_blank.svg) を元に作成しています。元画像はパブリックドメインで公開されているため、このアプリケーションもパブリックドメインで公開します。
+このアプリケーションは MIT ライセンスで公開しています。
+
+色度図の画像は [Wikipedia](https://commons.wikimedia.org/wiki/File:CIE1931xy_blank.svg) を元に作成しています。元画像はパブリックドメインです。
 
 ---
 
