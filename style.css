@@ -1,0 +1,152 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap');
+
+body {
+    font-family: 'Noto Sans JP', sans-serif;
+    background-color: #f4f7f6;
+    color: #333;
+    margin: 0;
+    padding: 0;
+    line-height: 1.8;
+}
+
+header {
+    background: linear-gradient(135deg, #566573, #2c3e50);
+    color: white;
+    padding: 60px 20px;
+    text-align: center;
+}
+
+header h1 img {
+    border-radius: 50%;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    transition: transform 0.3s ease;
+}
+
+header h1 img:hover {
+    transform: scale(1.1);
+}
+
+.navbar {
+    background-color: #ffffff;
+    border-bottom: 1px solid #e0e0e0;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.navbar ul {
+    display: flex;
+    justify-content: center;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.navbar ul li {
+    margin: 0;
+}
+
+.navbar ul li a {
+    display: block;
+    color: #555;
+    padding: 15px 25px;
+    text-decoration: none;
+    font-weight: 700;
+    transition: color 0.3s, background-color 0.3s;
+}
+
+.navbar ul li a:hover, .navbar ul li a.active {
+    color: #1a73e8;
+    background-color: #f0f4f8;
+}
+
+main {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+.card {
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    padding: 30px;
+    margin-bottom: 30px;
+    transition: box-shadow 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+}
+
+.card h2 {
+    border-bottom: 2px solid #1a73e8;
+    padding-bottom: 10px;
+    margin-top: 0;
+    color: #2c3e50;
+}
+
+a {
+    color: #1a73e8;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+footer {
+    text-align: center;
+    color: #888;
+    padding: 30px 20px;
+    font-size: 14px;
+    background-color: #e9ecef;
+    margin-top: 40px;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+
+/* 既存の.math-boxスタイルも残しつつ、微調整 */
+.math-box {
+    background-color: #f9f9f9;
+    border-left: 4px solid #1a73e8;
+    padding: 15px;
+    margin: 20px 0;
+    border-radius: 6px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.math-box p {
+    margin: 0 0 10px 0;
+    font-weight: bold;
+}
+
+
+@media (max-width: 600px) {
+    body {
+        font-size: 16px;
+    }
+
+    header {
+        padding: 40px 15px;
+    }
+
+    .navbar ul {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    main {
+        margin: 20px 10px;
+    }
+
+    .card {
+        padding: 20px;
+    }
+}
