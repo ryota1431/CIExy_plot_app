@@ -264,6 +264,9 @@
         text.setAttribute('y', py - 8);
         text.setAttribute('font-size', 16);
         text.setAttribute('fill', color);
+        text.setAttribute('stroke', 'black');
+        text.setAttribute('stroke-width', '0.5');
+        text.setAttribute('paint-order', 'stroke');
         text.textContent = label;
         g.appendChild(text);
       }
