@@ -131,7 +131,7 @@
         <form id="plotForm">
           <label>
             Bulk data input (x, y, color, label, radius, shadow ON/OFF)
-            <textarea id="bulk" rows="6" placeholder="e.g.&#10;0.33,0.33,#ff0000,Red,8,ON&#10;0.6,0.3,#0000ff,Blue,5,OFF">0.33, 0.33, #ff0000, Red point, 8, ON</textarea>
+            <textarea id="bulk" rows="6" placeholder="e.g.&#10;0.33,0.33,#ff0000,Red,8,ON&#10;0.6,0.3,#0000ff,Blue,5,OFF">0.30,0.33,#ffffff,White point,5,ON&#10;0.15,0.10,#0000ff,Blue point,5,OFF</textarea>
           </label>
           <div class="form-buttons">
             <button type="submit" id="plotBtn">Plot</button>
@@ -244,7 +244,13 @@ document.getElementById('plotForm').addEventListener('submit', function(e) {
       text.setAttribute('y', py - 8);
       text.setAttribute('font-size', 16);
       text.setAttribute('fill', color || '#ffffff');
+      text.setAttribute('stroke', 'black');
+      text.setAttribute('stroke-width', '0.5');
+      text.setAttribute('paint-order', 'stroke');
       text.textContent = label;
+      if (shadow == 'ON') {
+      text.setAttribute('filter', 'url(#dot-shadow)');
+    }
       g.appendChild(text);
     }
   });
