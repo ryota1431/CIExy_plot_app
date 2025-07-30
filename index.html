@@ -149,6 +149,10 @@
             点の大きさ (半径, 2～20)
             <input type="number" id="radius" min="2" max="20" value="5" required>
           </label>
+          <label style="flex-direction: row; align-items: center; gap: 8px;">
+            <input type="checkbox" id="shadow" checked>
+            点に影をつける
+          </label>
           <div class="form-buttons">
             <button type="submit" id="plotBtn">プロット</button>
             <button type="button" id="downloadBtn">SVGダウンロード</button>
@@ -161,6 +165,9 @@
           <defs>
             <path id="border"
               d="M150,473C147,473 145,471 142,469C135,462 129,455 124,446C121,441 118,436 116,431C113,424 110,416 107,408C103,396 99,385 95,373C86,339 77,298 72,264C66,226 61,179 62,141C63,118 65,81 80,60C84,54 91,50 98,49C105,48 112,51 118,53C140,60 160,76 178,90C236,135 287,191 339,243C360,264 380,284 401,305C409,313 417,321 426,329C428,332 430,334 433,337C434,337 434,338 435,339C435,339 436,340 436,340" />
+            <filter id="dot-shadow" x="-30%" y="-30%" width="160%" height="160%">
+              <feDropShadow dx="2" dy="2" stdDeviation="2" flood-color="#333" flood-opacity="0.4"/>
+            </filter>
           </defs>
           <clipPath id="clipborder">
             <use xlink:href="#border" />
@@ -234,6 +241,7 @@
       const color = document.getElementById('color').value;
       const label = document.getElementById('label').value;
       const radius = parseFloat(document.getElementById('radius').value); // 追加
+      const shadow = document.getElementById('shadow').checked; // 追加
       const {px, py} = xyToSvg(x, y);
 
       // 点を追加
@@ -243,6 +251,10 @@
       circle.setAttribute('cy', py);
       circle.setAttribute('r', radius); // 修正
       circle.setAttribute('fill', color);
+
+      if (shadow) {
+        circle.setAttribute('filter', 'url(#dot-shadow)');
+      }
       g.appendChild(circle);
 
       // ラベルを追加
