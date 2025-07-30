@@ -135,7 +135,8 @@
           </label>
           <div class="form-buttons">
             <button type="submit" id="plotBtn">Plot</button>
-            <button type="button" id="downloadBtn">Download SVG</button>
+            <button type="button" id="downloadBtn">Download SVG (Standard)</button>
+            <button type="button" id="downloadBtnPpt">Download SVG (for PowerPoint)</button>
           </div>
         </form>
       </div>
@@ -229,13 +230,19 @@ document.getElementById('plotForm').addEventListener('submit', function(e) {
     const [x, y, color, label, radius, shadow] = line.split(',').map(item => item.trim());
     const {px, py} = xyToSvg(parseFloat(x), parseFloat(y));
     const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    if (shadow) {
+        const shadowCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        shadowCircle.setAttribute('cx', px + 1);
+        shadowCircle.setAttribute('cy', py + 1);
+        shadowCircle.setAttribute('r', radius);
+        shadowCircle.setAttribute('fill', 'black');
+        shadowCircle.setAttribute('fill-opacity', '0.4');
+        g.appendChild(shadowCircle);
+      }
     circle.setAttribute('cx', px);
     circle.setAttribute('cy', py);
     circle.setAttribute('r', radius ? parseFloat(radius) : 5);
     circle.setAttribute('fill', color || '#ffffff');
-    if (shadow == 'ON') {
-      circle.setAttribute('filter', 'url(#dot-shadow)');
-    }
     g.appendChild(circle);
 
     if (label) {
@@ -257,19 +264,40 @@ document.getElementById('plotForm').addEventListener('submit', function(e) {
   
 });
 
-    // SVG download function
+    // Standard SVG download function
     document.getElementById('downloadBtn').addEventListener('click', function() {
-      const svg = document.getElementById('cie-svg');
-      svg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
-      svg.setAttribute("xmlns:xlink", "http://www.w3.org/1999/xlink");
+      const svgNode = document.getElementById('cie-svg');
+      const svgClone = svgNode.cloneNode(true); // Clone to avoid modifying the original SVG
+      svgClone.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+      svgClone.setAttribute("xmlns:xlink", "http://www.w3.org/1999/xlink");
       const serializer = new XMLSerializer();
-      const source = serializer.serializeToString(svg);
+      const source = serializer.serializeToString(svgClone);
       const blob = new Blob([source], {type: "image/svg+xml;charset=utf-8"});
       const url = URL.createObjectURL(blob);
-
       const a = document.createElement("a");
       a.href = url;
       a.download = "ciexy_plot.svg";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    });
+
+    // SVG download function for PowerPoint
+    document.getElementById('downloadBtnPpt').addEventListener('click', function() {
+      const svgNode = document.getElementById('cie-svg');
+      const svgClone = svgNode.cloneNode(true);
+      // Remove shadows (filters) for better compatibility
+      svgClone.querySelectorAll('[filter]').forEach(el => el.removeAttribute('filter'));
+      svgClone.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+      svgClone.setAttribute("xmlns:xlink", "http://www.w3.org/1999/xlink");
+      const serializer = new XMLSerializer();
+      const source = serializer.serializeToString(svgClone);
+      const blob = new Blob([source], {type: "image/svg+xml;charset=utf-8"});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "ciexy_plot_for_ppt.svg";
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);

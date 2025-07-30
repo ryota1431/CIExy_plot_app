@@ -165,9 +165,6 @@
           <defs>
             <path id="border"
               d="M150,473C147,473 145,471 142,469C135,462 129,455 124,446C121,441 118,436 116,431C113,424 110,416 107,408C103,396 99,385 95,373C86,339 77,298 72,264C66,226 61,179 62,141C63,118 65,81 80,60C84,54 91,50 98,49C105,48 112,51 118,53C140,60 160,76 178,90C236,135 287,191 339,243C360,264 380,284 401,305C409,313 417,321 426,329C428,332 430,334 433,337C434,337 434,338 435,339C435,339 436,340 436,340" />
-            <filter id="dot-shadow" x="-30%" y="-30%" width="160%" height="160%">
-              <feDropShadow dx="2" dy="2" stdDeviation="2" flood-color="#333" flood-opacity="0.4"/>
-            </filter>
           </defs>
           <clipPath id="clipborder">
             <use xlink:href="#border" />
@@ -243,30 +240,34 @@
       const radius = parseFloat(document.getElementById('radius').value); // 追加
       const shadow = document.getElementById('shadow').checked; // 追加
       const {px, py} = xyToSvg(x, y);
-
-      // 点を追加
       const g = document.getElementById('plot-group');
+
+      // 影を先に追加（PowerPoint互換）
+      if (shadow) {
+        const shadowCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        shadowCircle.setAttribute('cx', px + 1);
+        shadowCircle.setAttribute('cy', py + 1);
+        shadowCircle.setAttribute('r', radius);
+        shadowCircle.setAttribute('fill', 'black');
+        shadowCircle.setAttribute('fill-opacity', '0.4');
+        g.appendChild(shadowCircle);
+      }
+
+      // 本体となる点を追加
       const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
       circle.setAttribute('cx', px);
       circle.setAttribute('cy', py);
       circle.setAttribute('r', radius); // 修正
       circle.setAttribute('fill', color);
-
-      if (shadow) {
-        circle.setAttribute('filter', 'url(#dot-shadow)');
-      }
       g.appendChild(circle);
 
       // ラベルを追加
       if(label) {
         const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-        text.setAttribute('x', px + 8);
+        text.setAttribute('x', px + radius + 4); // 点の端から少し離す
         text.setAttribute('y', py - 8);
         text.setAttribute('font-size', 16);
         text.setAttribute('fill', color);
-        text.setAttribute('stroke', 'black');
-        text.setAttribute('stroke-width', '0.5');
-        text.setAttribute('paint-order', 'stroke');
         text.textContent = label;
         g.appendChild(text);
       }
