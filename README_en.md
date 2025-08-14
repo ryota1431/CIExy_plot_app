@@ -50,8 +50,5 @@ Images created with this application can be freely used, modified, and redistrib
 
 ## Citation Example for Papers, etc.
 
-As usual, you do not need to include this information, and there is no problem if you do not.
-
-> "The CIExy chromaticity diagram was generated using [CIExy_plot_app](https://ryota1431.github.io/CIExy_plot_app/). The base image is in the public domain ([CIE1931xy_blank.svg](https://commons.wikimedia.org/wiki/File:CIE1931xy_blank.svg))."
 
 ---
