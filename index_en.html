@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <title>CIExy Chromaticity Diagram Plotter</title>
   <link rel="stylesheet" href="style.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" integrity="sha512-vOtmwsgJvAciY4bn06edobhmE+Wz/DTnJ/ckhIDCsMqFeTLjMXMD1N+1S3yN79YqN9sYNeQCEieZomXh8jv7PA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/svg2pdf.js/0.3.3/svg2pdf.min.js" integrity="sha512-6QStPt4r1GYGLDnZ4Ku2YcSHdZeyRvZI4YtoOUSSVu9T8P/fww7Ko/8l1MavbVOheXG2oGtOHjJ0UkT1LxepPg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/svg2pdf.js@0.3.3/dist/svg2pdf.min.js"></script>
   <style>
     /* Page-specific styles for CIExy App */
     .app-container {
@@ -266,8 +266,19 @@ document.getElementById('plotForm').addEventListener('submit', function(e) {
   
 });
 
+    function ensurePdfLibraries() {
+      if (!window.jspdf || typeof window.jspdf.jsPDF !== 'function' || typeof window.svg2pdf !== 'function') {
+        alert('Failed to load the PDF export libraries. Please check your network connection and reload this page.');
+        return false;
+      }
+      return true;
+    }
+
     // PDF download function
     document.getElementById('downloadBtn').addEventListener('click', async function() {
+      if (!ensurePdfLibraries()) {
+        return;
+      }
       const svgNode = document.getElementById('cie-svg');
       const svgClone = svgNode.cloneNode(true);
       svgClone.setAttribute("xmlns", "http://www.w3.org/2000/svg");
