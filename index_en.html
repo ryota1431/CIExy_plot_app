@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <title>CIExy Chromaticity Diagram Plotter</title>
   <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/svg2pdf.js@0.3.3/dist/svg2pdf.min.js"></script>
   <style>
     /* Page-specific styles for CIExy App */
     .app-container {
@@ -135,7 +137,7 @@
           </label>
           <div class="form-buttons">
             <button type="submit" id="plotBtn">Plot</button>
-            <button type="button" id="downloadBtn">Download SVG (Standard)</button>
+            <button type="button" id="downloadBtn">Download PDF</button>
             <button type="button" id="downloadBtnPpt">Download SVG (for PowerPoint)</button>
           </div>
         </form>
@@ -264,23 +266,44 @@ document.getElementById('plotForm').addEventListener('submit', function(e) {
   
 });
 
-    // Standard SVG download function
-    document.getElementById('downloadBtn').addEventListener('click', function() {
+    function ensurePdfLibraries() {
+      if (!window.jspdf || typeof window.jspdf.jsPDF !== 'function' || typeof window.svg2pdf !== 'function') {
+        alert('Failed to load the PDF export libraries. Please check your network connection and reload this page.');
+        return false;
+      }
+      return true;
+    }
+
+    // PDF download function
+    document.getElementById('downloadBtn').addEventListener('click', async function() {
+      if (!ensurePdfLibraries()) {
+        return;
+      }
       const svgNode = document.getElementById('cie-svg');
-      const svgClone = svgNode.cloneNode(true); // Clone to avoid modifying the original SVG
+      const svgClone = svgNode.cloneNode(true);
       svgClone.setAttribute("xmlns", "http://www.w3.org/2000/svg");
       svgClone.setAttribute("xmlns:xlink", "http://www.w3.org/1999/xlink");
-      const serializer = new XMLSerializer();
-      const source = serializer.serializeToString(svgClone);
-      const blob = new Blob([source], {type: "image/svg+xml;charset=utf-8"});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "ciexy_plot.svg";
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
+
+      const viewBox = svgNode.viewBox.baseVal || {width: svgNode.clientWidth, height: svgNode.clientHeight};
+      const width = viewBox && viewBox.width ? viewBox.width : svgNode.getBoundingClientRect().width;
+      const height = viewBox && viewBox.height ? viewBox.height : svgNode.getBoundingClientRect().height;
+      const orientation = width >= height ? 'landscape' : 'portrait';
+
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF({
+        orientation,
+        unit: 'pt',
+        format: [width, height]
+      });
+
+      await Promise.resolve(window.svg2pdf(svgClone, pdf, {
+        x: 0,
+        y: 0,
+        width,
+        height
+      }));
+
+      pdf.save('ciexy_plot.pdf');
     });
 
     // SVG download function for PowerPoint
