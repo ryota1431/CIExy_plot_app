@@ -296,36 +296,72 @@ document.getElementById('plotForm').addEventListener('submit', function(e) {
       URL.revokeObjectURL(url);
     });
 
-    // PDF download (SVG → Canvas → PNG → print)
+    // PDF download (SVG → Canvas → JPEG → raw PDF binary)
     document.getElementById('downloadBtnPdf').addEventListener('click', function() {
       const svgNode = document.getElementById('cie-svg');
       const serializer = new XMLSerializer();
       const svgStr = serializer.serializeToString(svgNode);
       const svgBlob = new Blob([svgStr], {type: 'image/svg+xml;charset=utf-8'});
-      const url = URL.createObjectURL(svgBlob);
+      const svgUrl = URL.createObjectURL(svgBlob);
 
       const img = new Image();
       img.onload = function() {
         const scale = 3;
+        const svgW = 500, svgH = 530;
         const canvas = document.createElement('canvas');
-        canvas.width = 500 * scale;
-        canvas.height = 530 * scale;
+        canvas.width = svgW * scale;
+        canvas.height = svgH * scale;
         const ctx = canvas.getContext('2d');
         ctx.fillStyle = 'white';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         ctx.scale(scale, scale);
-        ctx.drawImage(img, 0, 0, 500, 530);
-        URL.revokeObjectURL(url);
+        ctx.drawImage(img, 0, 0, svgW, svgH);
+        URL.revokeObjectURL(svgUrl);
 
-        const pngUrl = canvas.toDataURL('image/png');
-        const win = window.open('', '_blank');
-        if (!win) { alert('Popup was blocked. Please allow popups for this page.'); return; }
-        win.document.write('<!DOCTYPE html><html><head><style>@page{margin:0;size:500pt 530pt}body{margin:0;padding:0}img{display:block;width:100%;height:auto}</style></head><body><img src="' + pngUrl + '"></body></html>');
-        win.document.close();
-        win.focus();
-        setTimeout(function() { win.print(); win.close(); }, 300);
+        const jpegBin = atob(canvas.toDataURL('image/jpeg', 0.95).split(',')[1]);
+        const jpegLen = jpegBin.length;
+        const iw = canvas.width, ih = canvas.height;
+        const pw = svgW, ph = svgH;
+
+        const sc = `q ${pw} 0 0 ${ph} 0 0 cm /Im0 Do Q`;
+        const o1 = '1 0 obj\n<</Type/Catalog/Pages 2 0 R>>\nendobj\n';
+        const o2 = '2 0 obj\n<</Type/Pages/Kids[3 0 R]/Count 1>>\nendobj\n';
+        const o3 = `3 0 obj\n<</Type/Page/Parent 2 0 R/MediaBox[0 0 ${pw} ${ph}]/Contents 4 0 R/Resources<</XObject<</Im0 5 0 R>>>>>>\nendobj\n`;
+        const o4 = `4 0 obj\n<</Length ${sc.length}>>\nstream\n${sc}\nendstream\nendobj\n`;
+        const o5h = `5 0 obj\n<</Type/XObject/Subtype/Image/Width ${iw}/Height ${ih}/ColorSpace/DeviceRGB/BitsPerComponent 8/Filter/DCTDecode/Length ${jpegLen}>>\nstream\n`;
+        const o5f = '\nendstream\nendobj\n';
+        const hdr = '%PDF-1.4\n';
+
+        let p = hdr.length;
+        const x1=p; p+=o1.length;
+        const x2=p; p+=o2.length;
+        const x3=p; p+=o3.length;
+        const x4=p; p+=o4.length;
+        const x5=p; p+=o5h.length+jpegLen+o5f.length;
+        const xp=p;
+
+        const f = n => n.toString().padStart(10,'0');
+        const xref = `xref\n0 6\n0000000000 65535 f \n${f(x1)} 00000 n \n${f(x2)} 00000 n \n${f(x3)} 00000 n \n${f(x4)} 00000 n \n${f(x5)} 00000 n \n`;
+        const trailer = `trailer\n<</Size 6/Root 1 0 R>>\nstartxref\n${xp}\n%%EOF\n`;
+
+        const te = new TextEncoder();
+        const jpeg = new Uint8Array(jpegLen);
+        for (let i=0;i<jpegLen;i++) jpeg[i]=jpegBin.charCodeAt(i);
+
+        const pre = te.encode(hdr+o1+o2+o3+o4+o5h);
+        const post = te.encode(o5f+xref+trailer);
+        const out = new Uint8Array(pre.length+jpeg.length+post.length);
+        out.set(pre); out.set(jpeg,pre.length); out.set(post,pre.length+jpeg.length);
+
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(new Blob([out], {type:'application/pdf'}));
+        a.download = 'ciexy_plot.pdf';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(() => URL.revokeObjectURL(a.href), 1000);
       };
-      img.src = url;
+      img.src = svgUrl;
     });
   </script>
 </body>
