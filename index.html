@@ -281,18 +281,36 @@
       URL.revokeObjectURL(url);
     });
 
-    // PDFダウンロード（別ウィンドウで印刷）
+    // PDFダウンロード（SVG→Canvas→PNG→印刷）
     document.getElementById('downloadBtnPdf').addEventListener('click', function() {
       const svgNode = document.getElementById('cie-svg');
       const serializer = new XMLSerializer();
       const svgStr = serializer.serializeToString(svgNode);
-      const win = window.open('', '_blank');
-      if (!win) { alert('ポップアップがブロックされています。許可してください。'); return; }
-      win.document.write('<!DOCTYPE html><html><head><style>@page{margin:0}body{margin:0;padding:0}svg{display:block;width:100%;height:auto}</style></head><body>' + svgStr + '</body></html>');
-      win.document.close();
-      win.focus();
-      win.print();
-      win.close();
+      const svgBlob = new Blob([svgStr], {type: 'image/svg+xml;charset=utf-8'});
+      const url = URL.createObjectURL(svgBlob);
+
+      const img = new Image();
+      img.onload = function() {
+        const scale = 3;
+        const canvas = document.createElement('canvas');
+        canvas.width = 500 * scale;
+        canvas.height = 530 * scale;
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = 'white';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.scale(scale, scale);
+        ctx.drawImage(img, 0, 0, 500, 530);
+        URL.revokeObjectURL(url);
+
+        const pngUrl = canvas.toDataURL('image/png');
+        const win = window.open('', '_blank');
+        if (!win) { alert('ポップアップがブロックされています。許可してください。'); return; }
+        win.document.write('<!DOCTYPE html><html><head><style>@page{margin:0;size:500pt 530pt}body{margin:0;padding:0}img{display:block;width:100%;height:auto}</style></head><body><img src="' + pngUrl + '"></body></html>');
+        win.document.close();
+        win.focus();
+        setTimeout(function() { win.print(); win.close(); }, 300);
+      };
+      img.src = url;
     });
   </script>
 </body>
