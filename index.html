@@ -17,7 +17,7 @@
       flex: 1;
       min-width: 280px;
     }
-    
+
     .chart-card {
       flex: 2;
       min-width: 320px;
@@ -47,23 +47,19 @@
       gap: 5px;
     }
 
-    #plotForm input[type="number"],
-    #plotForm input[type="text"],
-    #plotForm input[type="color"] {
+    #plotForm textarea {
       width: 100%;
       padding: 10px;
       border: 1px solid #ccc;
       border-radius: 6px;
-      box-sizing: border-box; /* Important for padding and width */
+      box-sizing: border-box;
+      font-family: monospace;
+      font-size: 13px;
+      resize: vertical;
       transition: border-color 0.3s, box-shadow 0.3s;
     }
 
-    #plotForm input[type="color"] {
-      padding: 5px; /* Color input has different default padding */
-      height: 45px;
-    }
-
-    #plotForm input:focus {
+    #plotForm textarea:focus {
       outline: none;
       border-color: #1a73e8;
       box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.2);
@@ -100,12 +96,20 @@
         background-color: #1868d1;
     }
 
-    #downloadBtn {
+    #resetBtn {
+      background-color: #e53935;
+      color: white;
+    }
+    #resetBtn:hover {
+      background-color: #c62828;
+    }
+
+    #downloadBtn, #downloadBtnPdf {
       background-color: #f1f3f4;
       color: #3c4043;
       border: 1px solid #dadce0;
     }
-    #downloadBtn:hover {
+    #downloadBtn:hover, #downloadBtnPdf:hover {
         background-color: #e8eaed;
     }
 
@@ -130,52 +134,37 @@
         <h2>プロット設定</h2>
         <form id="plotForm">
           <label>
-            x座標 (0.0～0.8)
-            <input type="number" step="0.001" min="0" max="0.8" id="x" required>
-          </label>
-          <label>
-            y座標 (0.0～0.9)
-            <input type="number" step="0.001" min="0" max="0.9" id="y" required>
-          </label>
-          <label>
-            色
-            <input type="color" id="color" value="#ffffff">
-          </label>
-          <label>
-            ラベル
-            <input type="text" id="label" maxlength="20" placeholder="（任意）">
-          </label>
-          <label>
-            点の大きさ (半径, 2～20)
-            <input type="number" id="radius" min="2" max="20" value="5" required>
-          </label>
-          <label style="flex-direction: row; align-items: center; gap: 8px;">
-            <input type="checkbox" id="shadow" checked>
-            点に影をつける
+            一括データ入力 (x, y, 色, ラベル, 半径, 影 ON/OFF)
+            <textarea id="bulk" rows="6" placeholder="例：&#10;0.33,0.33,#ff0000,赤,8,ON&#10;0.6,0.3,#0000ff,青,5,OFF">0.30,0.33,#ffffff,白色点,5,ON&#10;0.15,0.10,#0000ff,青色点,5,OFF</textarea>
           </label>
           <div class="form-buttons">
             <button type="submit" id="plotBtn">プロット</button>
-            <button type="button" id="downloadBtn">SVGダウンロード</button>
+            <button type="button" id="resetBtn">リセット</button>
+            <button type="button" id="downloadBtn">SVGダウンロード（標準）</button>
+            <button type="button" id="downloadBtnPdf">PDFダウンロード</button>
           </div>
         </form>
       </div>
       <div class="card chart-card">
-        <svg id="cie-svg" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+        <svg id="cie-svg" version="1.1" xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 500 530">
           <defs>
             <path id="border"
               d="M150,473C147,473 145,471 142,469C135,462 129,455 124,446C121,441 118,436 116,431C113,424 110,416 107,408C103,396 99,385 95,373C86,339 77,298 72,264C66,226 61,179 62,141C63,118 65,81 80,60C84,54 91,50 98,49C105,48 112,51 118,53C140,60 160,76 178,90C236,135 287,191 339,243C360,264 380,284 401,305C409,313 417,321 426,329C428,332 430,334 433,337C434,337 434,338 435,339C435,339 436,340 436,340" />
+            <filter id="dot-shadow" x="-30%" y="-30%" width="160%" height="160%">
+              <feDropShadow dx="2" dy="2" stdDeviation="2" flood-color="#333" flood-opacity="0.4"/>
+            </filter>
           </defs>
           <clipPath id="clipborder">
-            <use xlink:href="#border" />
+            <use href="#border" />
           </clipPath>
-          <use stroke="black" stroke-width="4" fill="none" xlink:href="#border" />
+          <use stroke="black" stroke-width="4" fill="none" href="#border" />
           <g clip-path="url(#clipborder)">
             <filter id="blur">
               <feGaussianBlur stdDeviation="0.5" />
             </filter>
             <image width="27" height="28" filter="url(#blur)"
-              xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABsAAAAcCAIAAAAfs1O6AAAAAXNSR0IArs4c6QAAA7tJREFUeF591cuKHFUYwPH/d+rUpaenZ5JMLkaMuBAJQly5EeJCtz6M+AC+khvxIbIw4AVMAsEQJ5kkM+mpnumu7rqdz65zOHQxgvCnqCqoX38f1XQL+gsALTRQwwYquIRzOIHH3/HkM/gQbsF1uKbMlKljryfvyDpsS9JgtrVIi0UNgCQwzsYywMS7KVhIdci6oaTDxCSIkACgEbpSGkV/raShwPVe9FCIJn48muB1346LM4aLUBwwcF40DdKAP5r4cETHXBSTEZ/5AdMe25F4a8SNZ8T+t6uikoXCgHE0qaEOxyjuUB0vl43FFPJtSu5I4/s1NSZyxBODBiimV7ic8MqjmPVerDEbZAOjYzgJECgIoODAoxEhDlgohSNvd5ysI9dAqMWgCTpeOUOj5Z0jHuYcTpRtRUdaY9eYakgqqAaXyrceMuNliSv7im0Zk5t8co2vpnw67Ska0jVmNcQSWQ2xrdqhCT9+DwZklwiAOGge4h6Qf0xx1x3caPYmyxO7wFx6bumttW/jq2EziD9E0SAmnCOAIt3XmPtbUfM7XX6wKrJylsyPWSAXEMTqKmpxFkAUHDpGFeoPSI6or7v9WV1kl2JKlUXC+Z8sy0Gpfa2vC4UXAqh6IkEckgwZ8wC9w+wmzfV2NblMkrKVsqHsKYXF31THnov1Xuyx9BaIa/pIMT2afm7y2/RHrp1VF+l5I/OVzNect5z3LISLnNVz2gDtilsDeBS8C+I+Qm+i19omnztzNpWzKfN93teUHaWjhDJl/gTHOEtnxyAICio4ua1y4HRSrZN3Be9yTgvOJsy3bsu840x5Ba9n0EdPwVm6BAiKvyP0hla+rc2Bo2jVLFveWN5kbN3TCWcbThtetTwXmELnC2jvxdaAh0KdUAuV3Ktkr8XWjguj7ywnGW+35RwX/NGA8VzrC2IXxSbxInQ7jnO5sSKvMRWUom8TfW35J5VHGW4K5r9fnCj2diCAXmiFmoFbyL0TZhuyFeYSPYVjw++WNwXsg0ACqa8NXRENQMtAr+FCOOX+a/ZW2BI5hWeiT42SCYXSCRpQXwM20MTFDWuGKmEJC+E9vOTWS4pn2F/V/AxPcSRKqmThNxeK/8myFoANrIQS3sJfHL6geEwBFgUUo7tNs/hFAST+URroIPFbV16s4IIw4Bc/cQsOIQcTn1QS9QsKveIEBUaoQBK3rhi6JAzIb3wJRzCFDDUAKEIYE+tLNc7rS8MxZFkCccAXfPOIuzCDHLVxRkXUbxdQoSdOSlwiZv4FiZsWgB+yll0AAAAASUVORK5CYII="
+              href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABsAAAAcCAIAAAAfs1O6AAAAAXNSR0IArs4c6QAAA7tJREFUeF591cuKHFUYwPH/d+rUpaenZ5JMLkaMuBAJQly5EeJCtz6M+AC+khvxIbIw4AVMAsEQJ5kkM+mpnumu7rqdz65zOHQxgvCnqCqoX38f1XQL+gsALTRQwwYquIRzOIHH3/HkM/gQbsF1uKbMlKljryfvyDpsS9JgtrVIi0UNgCQwzsYywMS7KVhIdci6oaTDxCSIkACgEbpSGkV/raShwPVe9FCIJn48muB1346LM4aLUBwwcF40DdKAP5r4cETHXBSTEZ/5AdMe25F4a8SNZ8T+t6uikoXCgHE0qaEOxyjuUB0vl43FFPJtSu5I4/s1NSZyxBODBiimV7ic8MqjmPVerDEbZAOjYzgJECgIoODAoxEhDlgohSNvd5ysI9dAqMWgCTpeOUOj5Z0jHuYcTpRtRUdaY9eYakgqqAaXyrceMuNliSv7im0Zk5t8co2vpnw67Ska0jVmNcQSWQ2xrdqhCT9+DwZklwiAOGge4h6Qf0xx1x3caPYmyxO7wFx6bumttW/jq2EziD9E0SAmnCOAIt3XmPtbUfM7XX6wKrJylsyPWSAXEMTqKmpxFkAUHDpGFeoPSI6or7v9WV1kl2JKlUXC+Z8sy0Gpfa2vC4UXAqh6IkEckgwZ8wC9w+wmzfV2NblMkrKVsqHsKYXF31THnov1Xuyx9BaIa/pIMT2afm7y2/RHrp1VF+l5I/OVzNect5z3LISLnNVz2gDtilsDeBS8C+I+Qm+i19omnztzNpWzKfN93teUHaWjhDJl/gTHOEtnxyAICio4ua1y4HRSrZN3Be9yTgvOJsy3bsu840x5Ba9n0EdPwVm6BAiKvyP0hla+rc2Bo2jVLFveWN5kbN3TCWcbThtetTwXmELnC2jvxdaAh0KdUAuV3Ktkr8XWjguj7ywnGW+35RwX/NGA8VzrC2IXxSbxInQ7jnO5sSKvMRWUom8TfW35J5VHGW4K5r9fnCj2diCAXmiFmoFbyL0TZhuyFeYSPYVjw++WNwXsg0ACqa8NXRENQMtAr+FCOOX+a/ZW2BI5hWeiT42SCYXSCRpQXwM20MTFDWuGKmEJC+E9vOTWS4pn2F/V/AxPcSRKqmThNxeK/8myFoANrIQS3sJfHL6geEwBFgUUo7tNs/hFAST+URroIPFbV16s4IIw4Bc/cQsOIQcTn1QS9QsKveIEBUaoQBK3rhi6JAzIb3wJRzCFDDUAKEIYE+tLNc7rS8MxZFkCccAXfPOIuzCDHLVxRkXUbxdQoSdOSlwiZv4FiZsWgB+yll0AAAAASUVORK5CYII="
               transform="translate(36,35.8) scale(16)"> </image>
           </g>
           <path stroke="black" stroke-width="2" stroke-linecap="square" fill="none"
@@ -211,7 +200,7 @@
           </g>
           <!--原点(0.0, 0.0) = (60, 476)-->
           <!--(0.8, 0.0) = (470, 476)-->
-          <!--(0.0, 0.9) = (60, 16)-->
+          <!--(0.0, 0.9) = (60, 15)-->
           <g id="plot-group"></g>
         </svg>
       </div>
@@ -223,66 +212,66 @@
   <script>
     // SVG座標変換
     function xyToSvg(x, y) {
-      // SVG内の変換式に合わせる
       // px = 60 + x * 410 / 0.8
-      // py = 476 - y * 460 / 0.9
+      // py = 476 - y * 461 / 0.9
       const px = 60 + x * 410 / 0.8;
-      const py = 476 - y * 460 / 0.9;
+      const py = 476 - y * 461 / 0.9;
       return {px, py};
     }
 
     document.getElementById('plotForm').addEventListener('submit', function(e) {
       e.preventDefault();
-      const x = parseFloat(document.getElementById('x').value);
-      const y = parseFloat(document.getElementById('y').value);
-      const color = document.getElementById('color').value;
-      const label = document.getElementById('label').value;
-      const radius = parseFloat(document.getElementById('radius').value); // 追加
-      const shadow = document.getElementById('shadow').checked; // 追加
-      const {px, py} = xyToSvg(x, y);
       const g = document.getElementById('plot-group');
+      const bulk = document.getElementById('bulk').value.trim();
 
-      // 影を先に追加（PowerPoint互換）
-      if (shadow) {
-        const shadowCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-        shadowCircle.setAttribute('cx', px + 1);
-        shadowCircle.setAttribute('cy', py + 1);
-        shadowCircle.setAttribute('r', radius);
-        shadowCircle.setAttribute('fill', 'black');
-        shadowCircle.setAttribute('fill-opacity', '0.4');
-        g.appendChild(shadowCircle);
-      }
+      const lines = bulk.split('\n');
+      lines.forEach(line => {
+        if (!line.trim()) return;
+        const [x, y, color, label, radius, shadow] = line.split(',').map(item => item.trim());
+        const {px, py} = xyToSvg(parseFloat(x), parseFloat(y));
 
-      // 本体となる点を追加
-      const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-      circle.setAttribute('cx', px);
-      circle.setAttribute('cy', py);
-      circle.setAttribute('r', radius); // 修正
-      circle.setAttribute('fill', color);
-      g.appendChild(circle);
+        const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        circle.setAttribute('cx', px);
+        circle.setAttribute('cy', py);
+        circle.setAttribute('r', radius ? parseFloat(radius) : 5);
+        circle.setAttribute('fill', color || '#ffffff');
+        if (shadow === 'ON') {
+          circle.setAttribute('filter', 'url(#dot-shadow)');
+        }
+        g.appendChild(circle);
 
-      // ラベルを追加
-      if(label) {
-        const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-        text.setAttribute('x', px + radius + 4); // 点の端から少し離す
-        text.setAttribute('y', py - 8);
-        text.setAttribute('font-size', 16);
-        text.setAttribute('fill', color);
-        text.textContent = label;
-        g.appendChild(text);
-      }
+        if (label) {
+          const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+          text.setAttribute('x', px + 8);
+          text.setAttribute('y', py - 8);
+          text.setAttribute('font-size', 16);
+          text.setAttribute('fill', color || '#ffffff');
+          text.setAttribute('stroke', 'black');
+          text.setAttribute('stroke-width', '0.5');
+          text.setAttribute('paint-order', 'stroke');
+          text.textContent = label;
+          if (shadow === 'ON') {
+            text.setAttribute('filter', 'url(#dot-shadow)');
+          }
+          g.appendChild(text);
+        }
+      });
     });
 
-    // SVGダウンロード機能
+    // リセット
+    document.getElementById('resetBtn').addEventListener('click', function() {
+      document.getElementById('plot-group').innerHTML = '';
+    });
+
+    // SVGダウンロード（標準）
     document.getElementById('downloadBtn').addEventListener('click', function() {
-      const svg = document.getElementById('cie-svg');
-      svg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
-      svg.setAttribute("xmlns:xlink", "http://www.w3.org/1999/xlink");
+      const svgNode = document.getElementById('cie-svg');
+      const svgClone = svgNode.cloneNode(true);
+      svgClone.setAttribute("xmlns", "http://www.w3.org/2000/svg");
       const serializer = new XMLSerializer();
-      const source = serializer.serializeToString(svg);
+      const source = serializer.serializeToString(svgClone);
       const blob = new Blob([source], {type: "image/svg+xml;charset=utf-8"});
       const url = URL.createObjectURL(blob);
-
       const a = document.createElement("a");
       a.href = url;
       a.download = "ciexy_plot.svg";
@@ -290,6 +279,37 @@
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
+    });
+
+    // PDFダウンロード（印刷ダイアログ経由ベクタ出力）
+    document.getElementById('downloadBtnPdf').addEventListener('click', function() {
+      const svgNode = document.getElementById('cie-svg');
+      const svgClone = svgNode.cloneNode(true);
+      svgClone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+      svgClone.style.cssText = 'width:100%;height:auto;display:block;';
+
+      const printDiv = document.createElement('div');
+      printDiv.id = 'pdf-print-area';
+      printDiv.appendChild(svgClone);
+      document.body.appendChild(printDiv);
+
+      const style = document.createElement('style');
+      style.id = 'pdf-print-style';
+      style.textContent = [
+        '@media print {',
+        '  body > *:not(#pdf-print-area) { display:none !important; }',
+        '  #pdf-print-area { display:block !important; }',
+        '  @page { margin:0; size:auto; }',
+        '}',
+        '#pdf-print-area { display:none; }'
+      ].join('
+');
+      document.head.appendChild(style);
+
+      window.print();
+
+      document.body.removeChild(printDiv);
+      document.head.removeChild(style);
     });
   </script>
 </body>

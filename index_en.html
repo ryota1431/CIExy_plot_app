@@ -100,12 +100,20 @@
         background-color: #1868d1;
     }
 
-    #downloadBtn {
+    #resetBtn {
+      background-color: #e53935;
+      color: white;
+    }
+    #resetBtn:hover {
+      background-color: #c62828;
+    }
+
+    #downloadBtn, #downloadBtnPdf {
       background-color: #f1f3f4;
       color: #3c4043;
       border: 1px solid #dadce0;
     }
-    #downloadBtn:hover {
+    #downloadBtn:hover, #downloadBtnPdf:hover {
         background-color: #e8eaed;
     }
 
@@ -135,13 +143,14 @@
           </label>
           <div class="form-buttons">
             <button type="submit" id="plotBtn">Plot</button>
+            <button type="button" id="resetBtn">Reset</button>
             <button type="button" id="downloadBtn">Download SVG (Standard)</button>
-            <button type="button" id="downloadBtnPpt">Download SVG (for PowerPoint)</button>
+            <button type="button" id="downloadBtnPdf">Download PDF</button>
           </div>
         </form>
       </div>
       <div class="card chart-card">
-        <svg id="cie-svg" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+        <svg id="cie-svg" version="1.1" xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 500 530">
           <defs>
             <path id="border"
@@ -151,15 +160,15 @@
             </filter>
           </defs>
           <clipPath id="clipborder">
-            <use xlink:href="#border" />
+            <use href="#border" />
           </clipPath>
-          <use stroke="black" stroke-width="4" fill="none" xlink:href="#border" />
+          <use stroke="black" stroke-width="4" fill="none" href="#border" />
           <g clip-path="url(#clipborder)">
             <filter id="blur">
               <feGaussianBlur stdDeviation="0.5" />
             </filter>
             <image width="27" height="28" filter="url(#blur)"
-              xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABsAAAAcCAIAAAAfs1O6AAAAAXNSR0IArs4c6QAAA7tJREFUeF591cuKHFUYwPH/d+rUpaenZ5JMLkaMuBAJQly5EeJCtz6M+AC+khvxIbIw4AVMAsEQJ5kkM+mpnumu7rqdz65zOHQxgvCnqCqoX38f1XQL+gsALTRQwwYquIRzOIHH3/HkM/gQbsF1uKbMlKljryfvyDpsS9JgtrVIi0UNgCQwzsYywMS7KVhIdci6oaTDxCSIkACgEbpSGkV/raShwPVe9FCIJn48muB1346LM4aLUBwwcF40DdKAP5r4cETHXBSTEZ/5AdMe25F4a8SNZ8T+t6uikoXCgHE0qaEOxyjuUB0vl43FFPJtSu5I4/s1NSZyxBODBiimV7ic8MqjmPVerDEbZAOjYzgJECgIoODAoxEhDlgohSNvd5ysI9dAqMWgCTpeOUOj5Z0jHuYcTpRtRUdaY9eYakgqqAaXyrceMuNliSv7im0Zk5t8co2vpnw67Ska0jVmNcQSWQ2xrdqhCT9+DwZklwiAOGge4h6Qf0xx1x3caPYmyxO7wFx6bumttW/jq2EziD9E0SAmnCOAIt3XmPtbUfM7XX6wKrJylsyPWSAXEMTqKmpxFkAUHDpGFeoPSI6or7v9WV1kl2JKlUXC+Z8sy0Gpfa2vC4UXAqh6IkEckgwZ8wC9w+wmzfV2NblMkrKVsqHsKYXF31THnov1Xuyx9BaIa/pIMT2afm7y2/RHrp1VF+l5I/OVzNect5z3LISLnNVz2gDtilsDeBS8C+I+Qm+i19omnztzNpWzKfN93teUHaWjhDJl/gTHOEtnxyAICio4ua1y4HRSrZN3Be9yTgvOJsy3bsu840x5Ba9n0EdPwVm6BAiKvyP0hla+rc2Bo2jVLFveWN5kbN3TCWcbThtetTwXmELnC2jvxdaAh0KdUAuV3Ktkr8XWjguj7ywnGW+35RwX/NGA8VzrC2IXxSbxInQ7jnO5sSKvMRWUom8TfW35J5VHGW4K5r9fnCj2diCAXmiFmoFbyL0TZhuyFeYSPYVjw++WNwXsg0ACqa8NXRENQMtAr+FCOOX+a/ZW2BI5hWeiT42SCYXSCRpQXwM20MTFDWuGKmEJC+E9vOTWS4pn2F/V/AxPcSRKqmThNxeK/8myFoANrIQS3sJfHL6geEwBFgUUo7tNs/hFAST+URroIPFbV16s4IIw4Bc/cQsOIQcTn1QS9QsKveIEBUaoQBK3rhi6JAzIb3wJRzCFDDUAKEIYE+tLNc7rS8MxZFkCccAXfPOIuzCDHLVxRkXUbxdQoSdOSlwiZv4FiZsWgB+yll0AAAAASUVORK5CYII="
+              href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABsAAAAcCAIAAAAfs1O6AAAAAXNSR0IArs4c6QAAA7tJREFUeF591cuKHFUYwPH/d+rUpaenZ5JMLkaMuBAJQly5EeJCtz6M+AC+khvxIbIw4AVMAsEQJ5kkM+mpnumu7rqdz65zOHQxgvCnqCqoX38f1XQL+gsALTRQwwYquIRzOIHH3/HkM/gQbsF1uKbMlKljryfvyDpsS9JgtrVIi0UNgCQwzsYywMS7KVhIdci6oaTDxCSIkACgEbpSGkV/raShwPVe9FCIJn48muB1346LM4aLUBwwcF40DdKAP5r4cETHXBSTEZ/5AdMe25F4a8SNZ8T+t6uikoXCgHE0qaEOxyjuUB0vl43FFPJtSu5I4/s1NSZyxBODBiimV7ic8MqjmPVerDEbZAOjYzgJECgIoODAoxEhDlgohSNvd5ysI9dAqMWgCTpeOUOj5Z0jHuYcTpRtRUdaY9eYakgqqAaXyrceMuNliSv7im0Zk5t8co2vpnw67Ska0jVmNcQSWQ2xrdqhCT9+DwZklwiAOGge4h6Qf0xx1x3caPYmyxO7wFx6bumttW/jq2EziD9E0SAmnCOAIt3XmPtbUfM7XX6wKrJylsyPWSAXEMTqKmpxFkAUHDpGFeoPSI6or7v9WV1kl2JKlUXC+Z8sy0Gpfa2vC4UXAqh6IkEckgwZ8wC9w+wmzfV2NblMkrKVsqHsKYXF31THnov1Xuyx9BaIa/pIMT2afm7y2/RHrp1VF+l5I/OVzNect5z3LISLnNVz2gDtilsDeBS8C+I+Qm+i19omnztzNpWzKfN93teUHaWjhDJl/gTHOEtnxyAICio4ua1y4HRSrZN3Be9yTgvOJsy3bsu840x5Ba9n0EdPwVm6BAiKvyP0hla+rc2Bo2jVLFveWN5kbN3TCWcbThtetTwXmELnC2jvxdaAh0KdUAuV3Ktkr8XWjguj7ywnGW+35RwX/NGA8VzrC2IXxSbxInQ7jnO5sSKvMRWUom8TfW35J5VHGW4K5r9fnCj2diCAXmiFmoFbyL0TZhuyFeYSPYVjw++WNwXsg0ACqa8NXRENQMtAr+FCOOX+a/ZW2BI5hWeiT42SCYXSCRpQXwM20MTFDWuGKmEJC+E9vOTWS4pn2F/V/AxPcSRKqmThNxeK/8myFoANrIQS3sJfHL6geEwBFgUUo7tNs/hFAST+URroIPFbV16s4IIw4Bc/cQsOIQcTn1QS9QsKveIEBUaoQBK3rhi6JAzIb3wJRzCFDDUAKEIYE+tLNc7rS8MxZFkCccAXfPOIuzCDHLVxRkXUbxdQoSdOSlwiZv4FiZsWgB+yll0AAAAASUVORK5CYII="
               transform="translate(36,35.8) scale(16)"> </image>
           </g>
           <path stroke="black" stroke-width="2" stroke-linecap="square" fill="none"
@@ -195,7 +204,7 @@
           </g>
           <!--Origin(0.0, 0.0) = (60, 476)-->
           <!--(0.8, 0.0) = (470, 476)-->
-          <!--(0.0, 0.9) = (60, 16)-->
+          <!--(0.0, 0.9) = (60, 15)-->
           <g id="plot-group"></g>
         </svg>
       </div>
@@ -209,9 +218,9 @@
     function xyToSvg(x, y) {
       // Match the transformation formula in SVG
       // px = 60 + x * 410 / 0.8
-      // py = 476 - y * 460 / 0.9
+      // py = 476 - y * 461 / 0.9
       const px = 60 + x * 410 / 0.8;
-      const py = 476 - y * 460 / 0.9;
+      const py = 476 - y * 461 / 0.9;
       return {px, py};
     }
 
@@ -264,12 +273,16 @@ document.getElementById('plotForm').addEventListener('submit', function(e) {
   
 });
 
+    // Reset
+    document.getElementById('resetBtn').addEventListener('click', function() {
+      document.getElementById('plot-group').innerHTML = '';
+    });
+
     // Standard SVG download function
     document.getElementById('downloadBtn').addEventListener('click', function() {
       const svgNode = document.getElementById('cie-svg');
       const svgClone = svgNode.cloneNode(true); // Clone to avoid modifying the original SVG
       svgClone.setAttribute("xmlns", "http://www.w3.org/2000/svg");
-      svgClone.setAttribute("xmlns:xlink", "http://www.w3.org/1999/xlink");
       const serializer = new XMLSerializer();
       const source = serializer.serializeToString(svgClone);
       const blob = new Blob([source], {type: "image/svg+xml;charset=utf-8"});
@@ -283,25 +296,35 @@ document.getElementById('plotForm').addEventListener('submit', function(e) {
       URL.revokeObjectURL(url);
     });
 
-    // SVG download function for PowerPoint
-    document.getElementById('downloadBtnPpt').addEventListener('click', function() {
+    // PDF download (vector via print dialog)
+    document.getElementById('downloadBtnPdf').addEventListener('click', function() {
       const svgNode = document.getElementById('cie-svg');
       const svgClone = svgNode.cloneNode(true);
-      // Remove shadows (filters) for better compatibility
-      svgClone.querySelectorAll('[filter]').forEach(el => el.removeAttribute('filter'));
-      svgClone.setAttribute("xmlns", "http://www.w3.org/2000/svg");
-      svgClone.setAttribute("xmlns:xlink", "http://www.w3.org/1999/xlink");
-      const serializer = new XMLSerializer();
-      const source = serializer.serializeToString(svgClone);
-      const blob = new Blob([source], {type: "image/svg+xml;charset=utf-8"});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "ciexy_plot_for_ppt.svg";
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
+      svgClone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+      svgClone.style.cssText = 'width:100%;height:auto;display:block;';
+
+      const printDiv = document.createElement('div');
+      printDiv.id = 'pdf-print-area';
+      printDiv.appendChild(svgClone);
+      document.body.appendChild(printDiv);
+
+      const style = document.createElement('style');
+      style.id = 'pdf-print-style';
+      style.textContent = [
+        '@media print {',
+        '  body > *:not(#pdf-print-area) { display:none !important; }',
+        '  #pdf-print-area { display:block !important; }',
+        '  @page { margin:0; size:auto; }',
+        '}',
+        '#pdf-print-area { display:none; }'
+      ].join('
+');
+      document.head.appendChild(style);
+
+      window.print();
+
+      document.body.removeChild(printDiv);
+      document.head.removeChild(style);
     });
   </script>
 </body>
