@@ -281,34 +281,18 @@
       URL.revokeObjectURL(url);
     });
 
-    // PDFダウンロード（印刷ダイアログ経由ベクタ出力）
+    // PDFダウンロード（別ウィンドウで印刷）
     document.getElementById('downloadBtnPdf').addEventListener('click', function() {
       const svgNode = document.getElementById('cie-svg');
-      const svgClone = svgNode.cloneNode(true);
-      svgClone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-      svgClone.style.cssText = 'width:100%;height:auto;display:block;';
-
-      const printDiv = document.createElement('div');
-      printDiv.id = 'pdf-print-area';
-      printDiv.appendChild(svgClone);
-      document.body.appendChild(printDiv);
-
-      const style = document.createElement('style');
-      style.id = 'pdf-print-style';
-      style.textContent = [
-        '@media print {',
-        '  body > *:not(#pdf-print-area) { display:none !important; }',
-        '  #pdf-print-area { display:block !important; }',
-        '  @page { margin:0; size:auto; }',
-        '}',
-        '#pdf-print-area { display:none; }'
-      ].join('\n');
-      document.head.appendChild(style);
-
-      window.print();
-
-      document.body.removeChild(printDiv);
-      document.head.removeChild(style);
+      const serializer = new XMLSerializer();
+      const svgStr = serializer.serializeToString(svgNode);
+      const win = window.open('', '_blank');
+      if (!win) { alert('ポップアップがブロックされています。許可してください。'); return; }
+      win.document.write('<!DOCTYPE html><html><head><style>@page{margin:0}body{margin:0;padding:0}svg{display:block;width:100%;height:auto}</style></head><body>' + svgStr + '</body></html>');
+      win.document.close();
+      win.focus();
+      win.print();
+      win.close();
     });
   </script>
 </body>
